@@ -10,6 +10,7 @@ members = [
     "ton-contract",
     "ton-grpc",
     "tvm-grpc",
+    "tools/ton-readonly-probe",
 ]
 
 [workspace.dependencies]
