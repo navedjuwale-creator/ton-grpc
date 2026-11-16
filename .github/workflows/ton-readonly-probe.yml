@@ -1,0 +1,48 @@
+name: TON read-only probe
+
+on:
+  push:
+    branches:
+      - recovery/ton-readonly-probe-v1
+    paths:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "tonlibjson-client/**"
+      - "tonlibjson-sys/**"
+      - "ton-client-util/**"
+      - "tl_parser/**"
+      - "tools/ton-readonly-probe/**"
+      - ".github/workflows/ton-readonly-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ton-readonly-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-build-and-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake clang pkg-config libssl-dev libsodium-dev libsecp256k1-dev liblz4-dev
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Compile probe
+        run: cargo check -p ton-readonly-probe --locked
+
+      - name: Run probe unit tests
+        run: cargo test -p ton-readonly-probe --locked
