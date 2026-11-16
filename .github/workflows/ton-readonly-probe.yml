@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y build-essential cmake clang pkg-config libssl-dev libsodium-dev libsecp256k1-dev liblz4-dev
 
       - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.90
 
       - name: Cache Cargo build
         uses: Swatinem/rust-cache@v2
